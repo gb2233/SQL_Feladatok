@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<SqlWorkbenchSqlProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SQL_Feladatok">
+  <Items>
+    <LogicalFolder Name="Connections" Type="2" Sorted="true">
+      <Items>
+        <ConnectionNode Name="T360-26CB:T360-26CB\Training">
+          <Created>2019-09-24T16:30:12.16671+02:00</Created>
+          <Type>SQL</Type>
+          <Server>T360-26CB</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>SQL_Projekt_Feladat</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+      </Items>
+    </LogicalFolder>
+    <LogicalFolder Name="Queries" Type="0" Sorted="true">
+      <Items>
+        <FileNode Name="2.Lekérdezésel.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:T360-26CB:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>T360-26CB</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>2.Lekérdezésel.sql</FullPath>
+        </FileNode>
+        <FileNode Name="3.lekérdezések.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:T360-26CB:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>T360-26CB</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>3.lekérdezések.sql</FullPath>
+        </FileNode>
+        <FileNode Name="4.lekérdezések.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:T360-26CB:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>T360-26CB</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>4.lekérdezések.sql</FullPath>
+        </FileNode>
+        <FileNode Name="BulkInserts.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:T360-26CB:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>T360-26CB</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>BulkInserts.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Feltoltes.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:T360-26CB:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>T360-26CB</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Feltoltes.sql</FullPath>
+        </FileNode>
+      </Items>
+    </LogicalFolder>
+    <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
+      <Items>
+        <FileNode Name="countries.csv">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>countries.csv</FullPath>
+        </FileNode>
+        <FileNode Name="iso2.csv">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>iso2.csv</FullPath>
+        </FileNode>
+      </Items>
+    </LogicalFolder>
+  </Items>
+</SqlWorkbenchSqlProject>
