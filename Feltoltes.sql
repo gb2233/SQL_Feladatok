@@ -1,3 +1,7 @@
+/*
+Ki itt belépsz hagyj fel minden reménnyel
+*/
+
 DROP TABLE Bookings
 DROP TABLE #euCountriesIsos
 DROP TABLE #selectedCities
