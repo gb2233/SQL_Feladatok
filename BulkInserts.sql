@@ -1,7 +1,12 @@
-DROP TABLE Countries
-DROP TABLE Iso2Codes
 
 USE SQL_Projekt_Feladat
+GO
+
+IF OBJECT_ID('dbo.Countries') IS NOT NULL
+	BEGIN drop table Countries END
+IF OBJECT_ID('dbo.Iso2Codes') IS NOT NULL
+	BEGIN drop table Iso2Codes END
+
 GO
 
 

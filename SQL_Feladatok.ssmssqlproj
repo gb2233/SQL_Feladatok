@@ -19,24 +19,6 @@
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
-        <FileNode Name="2.Lekérdezésel.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:T360-26CB:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>T360-26CB</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>2.Lekérdezésel.sql</FullPath>
-        </FileNode>
-        <FileNode Name="3.lekérdezések.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:T360-26CB:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>T360-26CB</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>3.lekérdezések.sql</FullPath>
-        </FileNode>
-        <FileNode Name="4.lekérdezések.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:T360-26CB:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>T360-26CB</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>4.lekérdezések.sql</FullPath>
-        </FileNode>
         <FileNode Name="BulkInserts.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:T360-26CB:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>T360-26CB</AssociatedConnSrvName>
@@ -48,6 +30,12 @@
           <AssociatedConnSrvName>T360-26CB</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Feltoltes.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Lekérdezések.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:T360-26CB:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>T360-26CB</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Lekérdezések.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

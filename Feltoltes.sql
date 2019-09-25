@@ -2,17 +2,23 @@
 Ki itt belépsz hagyj fel minden reménnyel
 */
 
-DROP TABLE Bookings
-DROP TABLE #euCountriesIsos
-DROP TABLE #selectedCities
-DROP TABLE #cids
-DROP TABLE #cidPairs
-DROP TABLE #bookingsAll
-
-GO
-
 USE SQL_Projekt_Feladat
 GO
+
+IF OBJECT_ID('dbo.Bookings') IS NOT NULL
+	drop table Bookings
+IF OBJECT_ID('tempdb..#euCountriesIsos') IS NOT NULL
+	drop table #euCountriesIsos
+IF OBJECT_ID('tempdb..#selectedCities') IS NOT NULL
+	drop table #selectedCities
+IF OBJECT_ID('tempdb..#cids') IS NOT NULL
+	drop table #cids
+IF OBJECT_ID('tempdb..#cidPairs') IS NOT NULL
+	drop table #cidPairs
+IF OBJECT_ID('tempdb..#bookingsAll') IS NOT NULL
+	drop table #bookingsAll
+GO
+
 
 CREATE TABLE Bookings(
 [BookingID] int NOT NULL IDENTITY(1,1) PRIMARY KEY,
@@ -33,13 +39,14 @@ INNER JOIN Countries c on ic.Name = c.country
 CREATE TABLE #selectedCities (
 ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
 asciiname VARCHAR(255) NOT NULL UNIQUE,
-Code VARCHAR(2) NOT NULL
+Code CHAR(2) NOT NULL
 )
-
 INSERT INTO #selectedCities
 SELECT inside.asciiname, inside.Code
-FROM (SELECT DISTINCT TOP 15 Code, asciiname FROM #euCountriesIsos eci WHERE (ABS(CAST((BINARY_CHECKSUM(*) * RAND()) as int)) % 100) < 30 ORDER BY asciiname) inside
-
+FROM (SELECT DISTINCT TOP 15 Code, asciiname FROM #euCountriesIsos eci WHERE (ABS(CAST((CHECKSUM(*) * RAND()) as int)) % 100) < 30 ORDER BY asciiname) inside
+UNION
+(SELECT 'Luton' asciiname, 'GB' Code)
+/*
 MERGE
     #selectedCities AS target 
 USING
@@ -52,7 +59,7 @@ WHEN MATCHED THEN
             target.Code = source.Code
 WHEN NOT MATCHED THEN 
     INSERT (asciiname,Code) VALUES ('Luton','GB');
-
+	*/
 GO
 
 
@@ -94,7 +101,7 @@ CROSS APPLY (
 	cp.CustomerID, 
 	cp.CCountry,
 	(
-		SELECT TOP(1) CEILING(RAND(CHECKSUM(NEWID()))*(SELECT COUNT(*) FROM #selectedCities))
+		SELECT CEILING(RAND(CHECKSUM(NEWID()))*(SELECT COUNT(*) FROM #selectedCities))
 	) DepartureStationID
 		FROM #cidPairs AS cp
 ) AS cp
@@ -103,10 +110,11 @@ INNER JOIN #selectedCities sc on sc.ID = cp.DepartureStationID
 INSERT INTO Bookings
 SELECT TOP(10000) *
 FROM #bookingsAll
-WHERE (ABS(CAST((BINARY_CHECKSUM(*) * RAND()) as int)) % 100) < 30
+WHERE (ABS(CAST((CHECKSUM(*) * RAND()) as int)) % 100) < 30
 
 GO
 
 SELECT * FROM #selectedCities
+
 --INDEXEK
 -- BookingID-re van is clustered index alapból
