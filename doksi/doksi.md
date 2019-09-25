@@ -1,5 +1,9 @@
-\$begin{center} Dokumentáció \end{center}$
-$\pagebreak$
+---
+title:
+- SQL Feladat Dokumentáció
+author:
+- Gulyás Bálint
+...
 
 # h1
 
