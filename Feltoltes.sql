@@ -46,6 +46,7 @@ SELECT inside.asciiname, inside.Code
 FROM (SELECT DISTINCT TOP 15 Code, asciiname FROM #euCountriesIsos eci WHERE (ABS(CAST((CHECKSUM(*) * RAND()) as int)) % 100) < 30 ORDER BY asciiname) inside
 UNION
 (SELECT 'Luton' asciiname, 'GB' Code)
+
 /*
 MERGE
     #selectedCities AS target 
