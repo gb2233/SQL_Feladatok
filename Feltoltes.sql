@@ -43,8 +43,8 @@ Code CHAR(2) NOT NULL
 )
 
 INSERT INTO #selectedCities
-SELECT inside.asciiname, inside.Code
-FROM (SELECT DISTINCT TOP 15 Code, asciiname FROM #euCountriesIsos eci WHERE (ABS(CAST((CHECKSUM(*) * RAND()) as int)) % 100) < 30) inside
+SELECT tmp.asciiname, tmp.Code
+FROM (SELECT DISTINCT TOP 15 Code, asciiname FROM #euCountriesIsos eci WHERE (ABS(CAST((CHECKSUM(*) * RAND()) as int)) % 100) < 30) tmp
 UNION
 (SELECT 'Luton' asciiname, 'GB' Code)
 GO

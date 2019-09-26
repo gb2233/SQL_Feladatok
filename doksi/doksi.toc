@@ -1,0 +1,4 @@
+\contentsline {section}{Bookings tábla elkészítése{[}\^{}1{]}}{2}{section*.1}% 
+\contentsline {subsection}{Kezdeti adatok importálása}{2}{section*.2}% 
+\contentsline {subsection}{Kiegészítő adathalmazok létrehozása}{2}{section*.3}% 
+\contentsline {subsection}{Bookings feltöltése}{3}{section*.4}% 

@@ -39,4 +39,3 @@ SELECT cntQry.CCountry Country,
 FROM (SELECT COUNT(b.BookingID) buyCnt, b.CustomerID, b.CCountry FROM Bookings b GROUP BY b.CustomerID,b.CCountry) cntQry
 GROUP BY cntQry.CCountry
 ORDER BY SUM(cntQry.buyCnt)
-S
