@@ -113,19 +113,21 @@ CREATE NONCLUSTERED INDEX NC_Bookings_countryCid ON [dbo].[Bookings]
 
 CREATE NONCLUSTERED INDEX NC_Bookings_countryCidDate ON [dbo].[Bookings]
 (
-	[CCountry] ASC,
 	[CustomerID] ASC,
+	[CCountry] ASC,
 	[Date] ASC
 )
-INCLUDE([Price]) WITH (SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
+INCLUDE([Price]) 
+WITH (SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
 
 CREATE NONCLUSTERED INDEX NC_Bookings_countryDateStation ON [dbo].[Bookings]
 (
-	[DepartureStation] ASC,
 	[Date] ASC,
+	[DepartureStation] ASC,
 	[CCountry] ASC
 )
-INCLUDE([Price]) WITH (SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
+INCLUDE([Price])
+WITH (SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
 GO
 
 -- Index & DB sizes
