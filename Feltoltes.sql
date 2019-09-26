@@ -41,9 +41,10 @@ ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
 asciiname VARCHAR(255) NOT NULL UNIQUE,
 Code CHAR(2) NOT NULL
 )
+
 INSERT INTO #selectedCities
 SELECT inside.asciiname, inside.Code
-FROM (SELECT DISTINCT TOP 15 Code, asciiname FROM #euCountriesIsos eci WHERE (ABS(CAST((CHECKSUM(*) * RAND()) as int)) % 100) < 30 ORDER BY asciiname) inside
+FROM (SELECT DISTINCT TOP 15 Code, asciiname FROM #euCountriesIsos eci WHERE (ABS(CAST((CHECKSUM(*) * RAND()) as int)) % 100) < 30) inside
 UNION
 (SELECT 'Luton' asciiname, 'GB' Code)
 GO
@@ -104,13 +105,13 @@ GO
 -- BookingID-re van is clustered index alapból
 -- Tuning advisorral
 
-CREATE NONCLUSTERED INDEX NCI_Bookings_countryCid ON [dbo].[Bookings]
+CREATE NONCLUSTERED INDEX NC_Bookings_countryCid ON [dbo].[Bookings]
 (
 	[CCountry] ASC,
 	[CustomerID] ASC
 )WITH (SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
 
-CREATE NONCLUSTERED INDEX NCI_Bookings_countryCidDate ON [dbo].[Bookings]
+CREATE NONCLUSTERED INDEX NC_Bookings_countryCidDate ON [dbo].[Bookings]
 (
 	[CCountry] ASC,
 	[CustomerID] ASC,
@@ -118,7 +119,7 @@ CREATE NONCLUSTERED INDEX NCI_Bookings_countryCidDate ON [dbo].[Bookings]
 )
 INCLUDE([Price]) WITH (SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
 
-CREATE NONCLUSTERED INDEX NCI_Bookings_countryDateStation ON [dbo].[Bookings]
+CREATE NONCLUSTERED INDEX NC_Bookings_countryDateStation ON [dbo].[Bookings]
 (
 	[DepartureStation] ASC,
 	[Date] ASC,
@@ -126,7 +127,6 @@ CREATE NONCLUSTERED INDEX NCI_Bookings_countryDateStation ON [dbo].[Bookings]
 )
 INCLUDE([Price]) WITH (SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
 GO
-
 
 -- Index & DB sizes
 
