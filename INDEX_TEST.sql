@@ -1,6 +1,11 @@
 USE SQL_Projekt_Feladat
 
-SET STATISTICS TIME ON;  
+DROP INDEX NC_Bookings_countryCid
+DROP INDEX NC_Bookings_countryCidDate
+DROP INDEX NC_Bookings_countryDateStation
+
+SET STATISTICS TIME ON;
+
 --2.
 SELECT b.CustomerID, b.CCountry , SUM(b.Price) 'Total Amount'
 FROM Bookings b

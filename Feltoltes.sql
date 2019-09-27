@@ -98,7 +98,6 @@ WHERE (ABS(CAST((CHECKSUM(*) * RAND()) as int)) % 100) < 30
 
 GO
 
-
 CREATE NONCLUSTERED INDEX NC_Bookings_countryCid ON [dbo].[Bookings]
 (
 	[CCountry] ASC,

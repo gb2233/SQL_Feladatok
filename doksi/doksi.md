@@ -240,7 +240,7 @@ GROUP BY cntQry.CCountry
 ORDER BY SUM(cntQry.buyCnt)
 ```
 
-# 5. feladat - Helymegtakarítás az indexek eldobásával
+# 6. feladat - Helymegtakarítás az indexek eldobásával
 
 Az indexek méretét több dolog is befolyásolja, így a konkrét tábla és indexek ismerete nélkül nem lehet meghatározni a helymegtakarítást. Befolyásoló szempontok lehetnek például a tábla mérete, a pageek fill-factora vagy indexben használt oszlopok típusai és száma. További nehezen meghatározható tényező a tömörített indexek és LOB-ok tárhely igénye
 
