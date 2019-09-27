@@ -1,16 +1,17 @@
 # Bookings tábla elkészítése[^1]
 
-[^1]: Részletes scriptek a mellékelt SSMS solution-ben találhatóak
+[^1]: A teljes scriptek a mellékelt SSMS solution-ben találhatóak
 
 
 ## Kezdeti adatok importálása
 
-Az európai városoknevek és az országok ISO kód listái külső forrásból[^2] lettek importálva két segédtáblába.
+Az európai városoknevek és az országok ISO kód listái külső forrásból[^linkek] lettek importálva két segédtáblába.
 
-dasd
-[^2]: [ISO Kódok](https://datahub.io/core/country-list?fbclid=IwAR1Kapllmzc9sthOPNstkF23BomEfkQeLyivSLC2joxgqqdsoksLm9FP3qw), [Városok](http://worldpopulationreview.com/continents/cities-in-europe/?fbclid=IwAR2zDepceQtlVAJOgoXHoPPrG6RKVhriUGgWYut_feKryAoLXVCs36y-Ip0)
+ [^linkek]: [ISO Kódok](https://datahub.io/core/country-list?fbclid=IwAR1Kapllmzc9sthOPNstkF23BomEfkQeLyivSLC2joxgqqdsoksLm9FP3qw), [Városok](http://worldpopulationreview.com/continents/cities-in-europe/?fbclid=IwAR2zDepceQtlVAJOgoXHoPPrG6RKVhriUGgWYut_feKryAoLXVCs36y-Ip0)
 
-Countries tábla:
+Countries tábla[^2] :
+
+
 ```sql
 CREATE TABLE Countries(
     [asciiname] VARCHAR(255) NOT NULL PRIMARY KEY,
@@ -26,7 +27,7 @@ WITH (FORMAT='CSV',
 
 ```
 
-Iso2Codes tábla:
+Iso2Codes tábla[^2] :
 ```sql
 CREATE TABLE Iso2Codes(
     [Code] VARCHAR(2) NOT NULL,
@@ -40,6 +41,8 @@ WITH (FORMAT='CSV',
 	ROWTERMINATOR = '0x0a')
 ```
 
+ [^2]: *<Elérési Útvonal>* helyettesítendő a kívánt fájl helyével
+ 
 ## Kiegészítő adathalmazok létrehozása
 
 A kiegészítő adatok ideiglenes táblában vannak tárolva a felhasználásukig, az átláthatóság kedvéért.
@@ -98,6 +101,167 @@ ORDER BY CustomerID
 
 ## Bookings feltöltése
 
+*Bookings* tábla létrehozása:
+```sql
+CREATE TABLE Bookings(
+[BookingID] int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+[CustomerID] int NOT NULL,
+[CCountry] varchar(2) NOT NULL,
+[DepartureStation] varchar(30) NOT NULL,
+[Date] datetime NOT NULL DEFAULT (GETDATE()),
+[Price] money NOT NULL,
+[Seats] int NOT NULL
+)
+```
+
+Egy kezdeti adathalmaz létrehozása:
+```sql
+WITH
+  l0(i) AS (SELECT 0 UNION ALL SELECT 0),
+  l1(i) AS (SELECT 0 FROM l0 a, l0 b),
+  l2(i) AS (SELECT 0 FROM l1 a, l1 b),
+  l3(i) AS (SELECT 0 FROM l2 a, l2 b),
+  numbers(i) AS (SELECT ROW_NUMBER() OVER(ORDER BY (SELECT 0)) FROM l3)
+SELECT TOP(1000000)
+	cp.CustomerID,
+	cp.CCountry,
+	sc.asciiname DepartureStation,
+	(DATEADD(ms,RAND(CHECKSUM(NEWID())) * 86400000,DATEADD(d,RAND(CHECKSUM(NEWID()))*365,'2019-01-01'))) [Date],
+	(ROUND(RAND(CHECKSUM(NEWID()))*200+10,2)) Price,
+	(CEILING(RAND(CHECKSUM(NEWID()))*50)) Seats
+INTO #bookingsAll
+from numbers
+CROSS APPLY (
+   SELECT 
+	cp.CustomerID, 
+	cp.CCountry,
+	(
+		SELECT CEILING(RAND(CHECKSUM(NEWID()))*(SELECT COUNT(*) 
+        FROM #selectedCities))
+	) DepartureStationID
+	FROM #cidPairs AS cp
+) AS cp
+INNER JOIN #selectedCities sc 
+    ON sc.ID = cp.DepartureStationID
+```
+
+Az adathalmazból véletlenszerűen kiválasztásra kerül tízezer bejegyzés a végleges *Bookings* táblába:
+```sql
+
+INSERT INTO Bookings
+SELECT TOP(10000) *
+FROM #bookingsAll
+WHERE (ABS(CAST((CHECKSUM(*) * RAND()) as int)) % 100) < 30
+```
+
+## Indexek létrehozása
+
+*BookingID* mezőn alapértelmezetten létrejön egy clustered index a *PRIMARY KEY* feltétel miatt
+
+Non Clustered Index a CCountry és CustomerID párokon:
+```sql
+CREATE NONCLUSTERED INDEX NC_Bookings_countryCid ON [dbo].[Bookings]
+(
+	[CCountry] ASC,
+	[CustomerID] ASC
+)
+```
+
+Ezen kívűl a feladat lekérdezéseihez a Database Engine Tuning Advisor által ajánlott optimális non clustered indexek:
+```sql
+CREATE NONCLUSTERED INDEX NC_Bookings_countryCidDate ON [dbo].[Bookings]
+(
+	[Date] ASC,
+	[CCountry] ASC,
+	[CustomerID] ASC
+)
+INCLUDE([Price])
+
+CREATE NONCLUSTERED INDEX NC_Bookings_countryDateStation ON [dbo].[Bookings]
+(
+	[DepartureStation] ASC,
+	[Date] ASC,
+	[CCountry] ASC
+)
+INCLUDE([Price])
+```
+
+# Lekérdezések
+
+#### 2. feladat - 2019 májusi megrendelések csökkenő sorrendben
+
+```sql
+SELECT b.CustomerID, b.CCountry , SUM(b.Price) 'Total Amount'
+FROM Bookings b
+WHERE b.[Date] >= '2019-05-01' AND b.[Date] < '2019-06-01'
+GROUP BY b.CustomerID,b.CCountry
+ORDER BY 'Total Amount' DESC
+```
+
+#### 3. feladat - Második negyedév Luton-ból induló megrendeléseinek összegei
+
+```sql
+SELECT b.CCountry Country,
+	ISNULL(SUM(case when DATEPART(m,b.[Date]) = 4 THEN b.Price END),0) '2019-04',
+	ISNULL(SUM(case when DATEPART(m,b.[Date]) = 5 THEN b.Price END),0) '2019-05',
+	ISNULL(SUM(case when DATEPART(m,b.[Date]) = 6 THEN b.Price END),0) '2019-06'
+FROM Bookings b
+WHERE b.DepartureStation = 'Luton' AND b.[Date] >= '2019-04-01' AND b.[Date] < '2019-07-01'
+GROUP BY b.CCountry
+ORDER BY SUM(b.Price) DESC
+```
+Megvalósítható *PIVOT* használatával is, ez azonban csak kevésbé rugalmas megjelenítést tesz lehetővé
+```sql
+SELECT * FROM 
+(SELECT b.CCountry Country, FORMAT(b.[Date],'yyyy-MM') dpart, b.Price
+	FROM Bookings b
+	WHERE b.DepartureStation = 'Luton' AND b.[Date] >= '2019-04-01' AND b.[Date] < '2019-07-01') x
+PIVOT (
+SUM(x.Price)
+FOR dpart IN ([2019-04],[2019-05],[2019-06])
+) PivotTable;
+```
+
+#### 4. feladat - Régiónkénti ügyfél vásárlási számok kimutatása
+
+```sql
+SELECT cntQry.CCountry Country, 
+	COUNT(case when cntQry.buyCnt = 1 THEN 1 ELSE null END) [1], 
+	COUNT(case when cntQry.buyCnt = 2 THEN 1 ELSE null END) [2], 
+	COUNT(case when cntQry.buyCnt = 3 THEN 1 ELSE null END) [3], 
+	COUNT(case when cntQry.buyCnt BETWEEN 4 AND 9 THEN 1 ELSE null END) [4-10], 
+	COUNT(case when cntQry.buyCnt BETWEEN 10 AND 100 THEN 1 ELSE null END) [10-100]
+FROM (
+    SELECT COUNT(b.BookingID) buyCnt, b.CustomerID, b.CCountry 
+    FROM Bookings b 
+    GROUP BY b.CustomerID,b.CCountry
+    ) cntQry
+GROUP BY cntQry.CCountry
+ORDER BY SUM(cntQry.buyCnt)
+```
+
+# 5. feladat - Helymegtakarítás az indexek eldobásával
+
+Az indexek méretét több dolog is befolyásolja, így a konkrét tábla és indexek ismerete nélkül nem lehet meghatározni a helymegtakarítást. Befolyásoló szempontok lehetnek például a tábla mérete, a pageek fill-factora vagy indexben használt oszlopok típusai és száma. További nehezen meghatározható tényező a tömörített indexek és LOB-ok tárhely igénye
+
+Az indexek által foglalt hely lekérdezhető az alábbi queryvel[^3]:
+ [^3]: *<TÁBLA>* helyettesítendő a keresett tábla nevével
+
+```sql
+SELECT
+OBJECT_NAME(i.OBJECT_ID) AS TableName,
+i.name AS IndexName,
+i.index_id AS IndexID,
+8 * SUM(a.used_pages) AS 'Indexsize(KB)'
+FROM sys.indexes AS i
+JOIN sys.partitions AS p ON p.OBJECT_ID = i.OBJECT_ID AND p.index_id = i.index_id
+JOIN sys.allocation_units AS a ON a.container_id = p.partition_id
+WHERE OBJECT_NAME(i.OBJECT_ID) = <TÁBLA>
+GROUP BY i.OBJECT_ID,i.index_id,i.name
+ORDER BY OBJECT_NAME(i.OBJECT_ID),i.index_id
+```
+
+# 
 
 
 
@@ -115,21 +279,21 @@ ORDER BY CustomerID
 
 
 
+# random jegyzetek
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+> SNAPShOT ISOLATION ON
+tempdb-be az update előtti adatok bekerülnek egy row version számmal
+    p: nincs lock
+    
+    c: tempdb igénybevétel nő
+    
+> Read committed Snapshot On
+    olvasni cak commitelt adatokból
+    
+> Mire érdemes figyelni:
+    több update-nél
+    UPDLock hinttel zárható az updatelt sor
+    kiadott update-eknél van e select updlockkal, vagy hibakezelés (begin try/end try)
 
 
 > (INDEX)

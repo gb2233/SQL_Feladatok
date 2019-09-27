@@ -3,7 +3,7 @@ USE SQL_Projekt_Feladat
 --2.
 SELECT b.CustomerID, b.CCountry , SUM(b.Price) 'Total Amount'
 FROM Bookings b
-WHERE DATEPART(m,b.[Date]) = 5
+WHERE b.[Date] >= '2019-05-01' AND b.[Date] < '2019-06-01'
 GROUP BY b.CustomerID,b.CCountry
 ORDER BY 'Total Amount' DESC
 
@@ -13,7 +13,7 @@ SELECT b.CCountry Country,
 	ISNULL(SUM(case when DATEPART(m,b.[Date]) = 5 THEN b.Price END),0) '2019-05',
 	ISNULL(SUM(case when DATEPART(m,b.[Date]) = 6 THEN b.Price END),0) '2019-06'
 FROM Bookings b
-WHERE b.DepartureStation = 'Luton' AND DATEPART(q,b.[Date]) = 2
+WHERE b.DepartureStation = 'Luton' AND b.[Date] >= '2019-04-01' AND b.[Date] < '2019-07-01'
 GROUP BY b.CCountry
 ORDER BY SUM(b.Price) DESC
 
@@ -22,7 +22,7 @@ ORDER BY SUM(b.Price) DESC
 SELECT * FROM 
 (SELECT b.CCountry Country, FORMAT(b.[Date],'yyyy-MM') dpart, b.Price
 	FROM Bookings b
-	WHERE b.DepartureStation = 'Luton' AND DATEPART(q,b.[Date]) = 2) x
+	WHERE b.DepartureStation = 'Luton' AND b.[Date] >= '2019-04-01' AND b.[Date] < '2019-07-01') x
 PIVOT (
 SUM(x.Price)
 FOR dpart IN ([2019-04],[2019-05],[2019-06])

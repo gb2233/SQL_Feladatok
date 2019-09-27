@@ -1,6 +1,3 @@
-/*
-Ki itt belépsz hagyj fel minden reménnyel
-*/
 
 USE SQL_Projekt_Feladat
 GO
@@ -101,9 +98,6 @@ WHERE (ABS(CAST((CHECKSUM(*) * RAND()) as int)) % 100) < 30
 
 GO
 
---INDEXEK
--- BookingID-re van is clustered index alapból
--- Tuning advisorral
 
 CREATE NONCLUSTERED INDEX NC_Bookings_countryCid ON [dbo].[Bookings]
 (
@@ -113,57 +107,19 @@ CREATE NONCLUSTERED INDEX NC_Bookings_countryCid ON [dbo].[Bookings]
 
 CREATE NONCLUSTERED INDEX NC_Bookings_countryCidDate ON [dbo].[Bookings]
 (
-	[CustomerID] ASC,
+	[Date] ASC,
 	[CCountry] ASC,
-	[Date] ASC
+	[CustomerID] ASC
 )
 INCLUDE([Price]) 
 WITH (SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
 
 CREATE NONCLUSTERED INDEX NC_Bookings_countryDateStation ON [dbo].[Bookings]
 (
-	[Date] ASC,
 	[DepartureStation] ASC,
+	[Date] ASC,
 	[CCountry] ASC
 )
 INCLUDE([Price])
 WITH (SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
-GO
-
--- Index & DB sizes
-
-
-SELECT tn.[name] AS [Table name], ix.[name] AS [Index name],
-SUM(sz.[used_page_count]) * 8 AS [Index size (KB)]
-FROM sys.dm_db_partition_stats AS sz
-INNER JOIN sys.indexes AS ix ON sz.[object_id] = ix.[object_id] 
-AND sz.[index_id] = ix.[index_id]
-INNER JOIN sys.tables tn ON tn.OBJECT_ID = ix.object_id
-GROUP BY tn.[name], ix.[name]
-ORDER BY tn.[name]
-
-SELECT [Database Name] = DB_NAME(database_id),
-
-       [Type] = CASE WHEN Type_Desc = 'ROWS' THEN 'Data File(s)'
-
-                     WHEN Type_Desc = 'LOG'  THEN 'Log File(s)'
-
-                     ELSE Type_Desc END,
-
-       [Size in MB] = CAST( ((SUM(Size)* 8) / 1024.0) AS DECIMAL(18,2) )
-
-FROM   sys.master_files
-
-GROUP BY      GROUPING SETS
-
-              (
-
-                     (DB_NAME(database_id), Type_Desc),
-
-                     (DB_NAME(database_id))
-
-              )
-
-ORDER BY      DB_NAME(database_id), Type_Desc DESC
-
 GO

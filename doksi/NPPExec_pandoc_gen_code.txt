@@ -1,0 +1,2 @@
+cd C:\anyag\!Project\Solutions\SQL_Feladatok\doksi
+pandoc $(FULL_CURRENT_PATH) -f markdown_mmd+footnotes+inline_notes --metadata title="SQL projektfeladat dokumentáció" --toc --template modified.latex --include-in-header chapter_break.tex --include-in-header inline_code.tex --include-in-header bullet_style.tex --include-in-header pdf_properties.tex --highlight-style pygments.theme -V toc-title="Tartalomjegyzék" -V linkcolor:blue -V geometry:a4paper -V geometry:margin=2cm -V mainfont="Calibri" -V monofont="Courier New" --pdf-engine=xelatex -o .\$(NAME_PART).pdf
