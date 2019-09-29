@@ -1,0 +1,523 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+  \setmainfont[]{DejaVu Sans}
+  \setmonofont[]{DejaVu Sans Mono}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={SQL projektfeladat dokumentáció},
+  colorlinks=true,
+  linkcolor=blue,
+  filecolor=Maroon,
+  citecolor=Blue,
+  urlcolor=Blue,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=2cm,a4paper]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.61,0.61,0.61}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{sectsty}
+\sectionfont{\clearpage}
+\usepackage{fancyvrb,newverbs,xcolor}
+
+\definecolor{Light}{gray}{.90}
+
+\let\oldtexttt\texttt
+\renewcommand{\texttt}[1]{
+  \colorbox{Light}{\oldtexttt{#1}}
+}
+\usepackage{enumitem}
+\usepackage{amsfonts}
+
+% level one
+\setlist[itemize,1]{label=$\bullet$}
+% level two
+\setlist[itemize,2]{label=$\circ$}
+% level three
+\setlist[itemize,3]{label=$\star$}
+\usepackage{hyperref}
+
+\hypersetup{
+  pdftitle={SQL Feladat Dokumentáció},
+  pdfauthor={Gulyás Bálint},
+  pdfsubject={Dokumentáció}
+}
+
+\title{SQL projektfeladat dokumentáció}
+\date{}
+
+\begin{document}
+\maketitle
+
+\hypertarget{bookings-tuxe1bla-elkuxe9szuxedtuxe9se1}{%
+\section[Bookings tábla elkészítése]{\texorpdfstring{Bookings tábla
+elkészítése\footnote{A teljes scriptek a mellékelt SSMS solution-ben
+  találhatóak}}{Bookings tábla elkészítése}}\label{bookings-tuxe1bla-elkuxe9szuxedtuxe9se1}}
+
+\hypertarget{kezdeti-adatok-importuxe1luxe1sa}{%
+\subsection{Kezdeti adatok
+importálása}\label{kezdeti-adatok-importuxe1luxe1sa}}
+
+Az európai városoknevek és az országok ISO kód listái külső
+forrásból\footnote{\href{https://datahub.io/core/country-list?fbclid=IwAR1Kapllmzc9sthOPNstkF23BomEfkQeLyivSLC2joxgqqdsoksLm9FP3qw}{ISO
+  Kódok},
+  \href{http://worldpopulationreview.com/continents/cities-in-europe/?fbclid=IwAR2zDepceQtlVAJOgoXHoPPrG6RKVhriUGgWYut_feKryAoLXVCs36y-Ip0}{Városok}}
+lettek importálva két segédtáblába.
+
+Countries tábla\footnote{\emph{} helyettesítendő a kívánt fájl helyével}
+:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE} \KeywordTok{TABLE}\NormalTok{ Countries(}
+\NormalTok{    [asciiname] }\DataTypeTok{VARCHAR}\NormalTok{(}\DecValTok{255}\NormalTok{) }\KeywordTok{NOT} \KeywordTok{NULL} \KeywordTok{PRIMARY} \KeywordTok{KEY}\NormalTok{,}
+\NormalTok{    [country] }\DataTypeTok{VARCHAR}\NormalTok{(}\DecValTok{255}\NormalTok{) }\KeywordTok{NOT} \KeywordTok{NULL}\NormalTok{,}
+\NormalTok{    [population] }\DataTypeTok{int} \KeywordTok{NOT} \KeywordTok{NULL}
+\NormalTok{)}
+\KeywordTok{BULK} \KeywordTok{INSERT}\NormalTok{ Countries}
+\KeywordTok{FROM} \StringTok{'<Elérési Útvonal>\textbackslash{}countries.csv'}
+\KeywordTok{WITH}\NormalTok{ (FORMAT}\OperatorTok{=}\StringTok{'CSV'}\NormalTok{,}
+\NormalTok{    FIRSTROW}\OperatorTok{=}\DecValTok{2}\NormalTok{,}
+\NormalTok{    FIELDTERMINATOR }\OperatorTok{=} \StringTok{'|'}\NormalTok{,}
+\NormalTok{    ROWTERMINATOR }\OperatorTok{=} \StringTok{'0x0a'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Iso2Codes tábla\footnote{\emph{} helyettesítendő a kívánt fájl helyével}
+:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE} \KeywordTok{TABLE}\NormalTok{ Iso2Codes(}
+\NormalTok{    [Code] }\DataTypeTok{VARCHAR}\NormalTok{(}\DecValTok{2}\NormalTok{) }\KeywordTok{NOT} \KeywordTok{NULL}\NormalTok{,}
+\NormalTok{    [Name] }\DataTypeTok{VARCHAR}\NormalTok{(}\DecValTok{255}\NormalTok{) }\KeywordTok{NOT} \KeywordTok{NULL} \KeywordTok{PRIMARY} \KeywordTok{KEY}
+\NormalTok{)}
+\KeywordTok{BULK} \KeywordTok{INSERT}\NormalTok{ Iso2Codes}
+\KeywordTok{FROM} \StringTok{'<Elérési Útvonal>\textbackslash{}iso2.csv'}
+\KeywordTok{WITH}\NormalTok{ (FORMAT}\OperatorTok{=}\StringTok{'CSV'}\NormalTok{,}
+\NormalTok{    FIRSTROW}\OperatorTok{=}\DecValTok{2}\NormalTok{,}
+\NormalTok{    FIELDTERMINATOR }\OperatorTok{=} \StringTok{'|'}\NormalTok{,}
+\NormalTok{    ROWTERMINATOR }\OperatorTok{=} \StringTok{'0x0a'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{kieguxe9szuxedtux151-adathalmazok-luxe9trehozuxe1sa}{%
+\subsection{Kiegészítő adathalmazok
+létrehozása}\label{kieguxe9szuxedtux151-adathalmazok-luxe9trehozuxe1sa}}
+
+A kiegészítő adatok ideiglenes táblában vannak tárolva a
+felhasználásukig, az átláthatóság kedvéért.
+
+Az ISO kódok hozzárendelése csak az európai országokhoz:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{SELECT}\NormalTok{ c.asciiname, ic.Code}
+\KeywordTok{INTO}\NormalTok{ #euCountriesIsos}
+\KeywordTok{FROM}\NormalTok{ Iso2Codes ic}
+\KeywordTok{INNER} \KeywordTok{JOIN}\NormalTok{ Countries c }\KeywordTok{on}\NormalTok{ ic.Name }\OperatorTok{=}\NormalTok{ c.country}
+\end{Highlighting}
+\end{Shaded}
+
+Városok kiválasztása:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE} \KeywordTok{TABLE}\NormalTok{ #selectedCities (}
+\KeywordTok{ID} \DataTypeTok{int} \KeywordTok{NOT} \KeywordTok{NULL}\NormalTok{ IDENTITY(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{) }\KeywordTok{PRIMARY} \KeywordTok{KEY}\NormalTok{,}
+\NormalTok{asciiname }\DataTypeTok{VARCHAR}\NormalTok{(}\DecValTok{255}\NormalTok{) }\KeywordTok{NOT} \KeywordTok{NULL} \KeywordTok{UNIQUE}\NormalTok{,}
+\NormalTok{Code }\DataTypeTok{CHAR}\NormalTok{(}\DecValTok{2}\NormalTok{) }\KeywordTok{NOT} \KeywordTok{NULL}
+\NormalTok{)}
+
+\KeywordTok{INSERT} \KeywordTok{INTO}\NormalTok{ #selectedCities}
+\KeywordTok{SELECT}\NormalTok{ tmp.asciiname, tmp.Code}
+\KeywordTok{FROM}\NormalTok{ (}
+    \KeywordTok{SELECT} \KeywordTok{DISTINCT}\NormalTok{ TOP }\DecValTok{15}\NormalTok{ Code, asciiname }
+    \KeywordTok{FROM}\NormalTok{ #euCountriesIsos eci }
+    \KeywordTok{WHERE}\NormalTok{ (}\FunctionTok{ABS}\NormalTok{(}\FunctionTok{CAST}\NormalTok{((CHECKSUM(}\OperatorTok{*}\NormalTok{) }\OperatorTok{*}\NormalTok{ RAND()) }\KeywordTok{as} \DataTypeTok{int}\NormalTok{)) % }\DecValTok{100}\NormalTok{) }\OperatorTok{<} \DecValTok{30}\NormalTok{) tmp}
+\KeywordTok{UNION}
+\NormalTok{    (}\KeywordTok{SELECT} \StringTok{'Luton'}\NormalTok{ asciiname, }\StringTok{'GB'}\NormalTok{ Code)}
+\end{Highlighting}
+\end{Shaded}
+
+A \emph{TABLESAMPLE} utasítás pontatlansága miatt a \emph{WHERE
+(ABS(CAST((CHECKSUM(}) * RAND()) as int)) \% 100) \textless{} 30*
+segítségével veszünk véletlenszerű mintát a \emph{\#euCountriesIsos}
+táblából.
+
+Ezek után generálunk 2500, hatjegyű \emph{CustomerID}-t:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{WITH}
+\NormalTok{  l0(i) }\KeywordTok{AS}\NormalTok{ (}\KeywordTok{SELECT} \DecValTok{0} \KeywordTok{UNION} \KeywordTok{ALL} \KeywordTok{SELECT} \DecValTok{0}\NormalTok{),}
+\NormalTok{  l1(i) }\KeywordTok{AS}\NormalTok{ (}\KeywordTok{SELECT} \DecValTok{0} \KeywordTok{FROM}\NormalTok{ l0 a, l0 b),}
+\NormalTok{  l2(i) }\KeywordTok{AS}\NormalTok{ (}\KeywordTok{SELECT} \DecValTok{0} \KeywordTok{FROM}\NormalTok{ l1 a, l1 b),}
+\NormalTok{  l3(i) }\KeywordTok{AS}\NormalTok{ (}\KeywordTok{SELECT} \DecValTok{0} \KeywordTok{FROM}\NormalTok{ l2 a, l2 b),}
+\NormalTok{  l4(i) }\KeywordTok{AS}\NormalTok{ (}\KeywordTok{SELECT} \DecValTok{0} \KeywordTok{FROM}\NormalTok{ l3 a, l3 b),}
+\NormalTok{  numbers(i) }\KeywordTok{AS}\NormalTok{ (}\KeywordTok{SELECT} \FunctionTok{ROW_NUMBER}\NormalTok{() }\KeywordTok{OVER}\NormalTok{(}\KeywordTok{ORDER} \KeywordTok{BY}\NormalTok{ (}\KeywordTok{SELECT} \DecValTok{0}\NormalTok{)) }\KeywordTok{FROM}\NormalTok{ l4)}
+\KeywordTok{SELECT} \KeywordTok{DISTINCT}\NormalTok{ TOP(}\DecValTok{2500}\NormalTok{) (CEILING(RAND(CHECKSUM(NEWID()))}\OperatorTok{*}\DecValTok{899999}\NormalTok{)}\OperatorTok{+}\DecValTok{100000}\NormalTok{) CustomerID }
+\KeywordTok{INTO}\NormalTok{ #cids }
+\KeywordTok{FROM}\NormalTok{ numbers }
+\KeywordTok{ORDER} \KeywordTok{BY}\NormalTok{ CustomerID}
+\end{Highlighting}
+\end{Shaded}
+
+\emph{CustomerID}-khoz \emph{CCountry} azonosítókat rendelünk:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{SELECT}\NormalTok{ cp.CustomerID CustomerID, sc.Code CCountry}
+\KeywordTok{INTO}\NormalTok{ #cidPairs}
+\KeywordTok{FROM}\NormalTok{ (}\KeywordTok{SELECT}\NormalTok{ cids.CustomerID, (CEILING(RAND(CHECKSUM(NEWID()))}\OperatorTok{*}\NormalTok{(}\KeywordTok{SELECT} \FunctionTok{COUNT}\NormalTok{(}\OperatorTok{*}\NormalTok{) }\KeywordTok{FROM}\NormalTok{ #selectedCities))) CountryID }\KeywordTok{FROM}\NormalTok{ #cids cids) cp}
+\KeywordTok{INNER} \KeywordTok{JOIN}\NormalTok{ #selectedCities sc }\KeywordTok{on}\NormalTok{ cp.CountryID }\OperatorTok{=}\NormalTok{ sc.}\KeywordTok{ID}
+\KeywordTok{ORDER} \KeywordTok{BY}\NormalTok{ CustomerID}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{bookings-feltuxf6ltuxe9se}{%
+\subsection{Bookings feltöltése}\label{bookings-feltuxf6ltuxe9se}}
+
+\emph{Bookings} tábla létrehozása:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE} \KeywordTok{TABLE}\NormalTok{ Bookings(}
+\NormalTok{[BookingID] }\DataTypeTok{int} \KeywordTok{NOT} \KeywordTok{NULL}\NormalTok{ IDENTITY(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{) }\KeywordTok{PRIMARY} \KeywordTok{KEY}\NormalTok{,}
+\NormalTok{[CustomerID] }\DataTypeTok{int} \KeywordTok{NOT} \KeywordTok{NULL}\NormalTok{,}
+\NormalTok{[CCountry] }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{2}\NormalTok{) }\KeywordTok{NOT} \KeywordTok{NULL}\NormalTok{,}
+\NormalTok{[DepartureStation] }\DataTypeTok{varchar}\NormalTok{(}\DecValTok{30}\NormalTok{) }\KeywordTok{NOT} \KeywordTok{NULL}\NormalTok{,}
+\NormalTok{[}\DataTypeTok{Date}\NormalTok{] datetime }\KeywordTok{NOT} \KeywordTok{NULL} \KeywordTok{DEFAULT}\NormalTok{ (GETDATE()),}
+\NormalTok{[Price] money }\KeywordTok{NOT} \KeywordTok{NULL}\NormalTok{,}
+\NormalTok{[Seats] }\DataTypeTok{int} \KeywordTok{NOT} \KeywordTok{NULL}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Egy kezdeti adathalmaz létrehozása:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{WITH}
+\NormalTok{  l0(i) }\KeywordTok{AS}\NormalTok{ (}\KeywordTok{SELECT} \DecValTok{0} \KeywordTok{UNION} \KeywordTok{ALL} \KeywordTok{SELECT} \DecValTok{0}\NormalTok{),}
+\NormalTok{  l1(i) }\KeywordTok{AS}\NormalTok{ (}\KeywordTok{SELECT} \DecValTok{0} \KeywordTok{FROM}\NormalTok{ l0 a, l0 b),}
+\NormalTok{  l2(i) }\KeywordTok{AS}\NormalTok{ (}\KeywordTok{SELECT} \DecValTok{0} \KeywordTok{FROM}\NormalTok{ l1 a, l1 b),}
+\NormalTok{  l3(i) }\KeywordTok{AS}\NormalTok{ (}\KeywordTok{SELECT} \DecValTok{0} \KeywordTok{FROM}\NormalTok{ l2 a, l2 b),}
+\NormalTok{  numbers(i) }\KeywordTok{AS}\NormalTok{ (}\KeywordTok{SELECT} \FunctionTok{ROW_NUMBER}\NormalTok{() }\KeywordTok{OVER}\NormalTok{(}\KeywordTok{ORDER} \KeywordTok{BY}\NormalTok{ (}\KeywordTok{SELECT} \DecValTok{0}\NormalTok{)) }\KeywordTok{FROM}\NormalTok{ l3)}
+\KeywordTok{SELECT}\NormalTok{ TOP(}\DecValTok{1000000}\NormalTok{)}
+\NormalTok{    cp.CustomerID,}
+\NormalTok{    cp.CCountry,}
+\NormalTok{    sc.asciiname DepartureStation,}
+\NormalTok{    (DATEADD(ms,RAND(CHECKSUM(NEWID())) }\OperatorTok{*} \DecValTok{86400000}\NormalTok{,DATEADD(d,RAND(CHECKSUM(NEWID()))}\OperatorTok{*}\DecValTok{365}\NormalTok{,}\StringTok{'2019-01-01'}\NormalTok{))) [}\DataTypeTok{Date}\NormalTok{],}
+\NormalTok{    (}\FunctionTok{ROUND}\NormalTok{(RAND(CHECKSUM(NEWID()))}\OperatorTok{*}\DecValTok{200}\OperatorTok{+}\DecValTok{10}\NormalTok{,}\DecValTok{2}\NormalTok{)) Price,}
+\NormalTok{    (CEILING(RAND(CHECKSUM(NEWID()))}\OperatorTok{*}\DecValTok{50}\NormalTok{)) Seats}
+\KeywordTok{INTO}\NormalTok{ #bookingsAll}
+\KeywordTok{from}\NormalTok{ numbers}
+\KeywordTok{CROSS}\NormalTok{ APPLY (}
+   \KeywordTok{SELECT} 
+\NormalTok{    cp.CustomerID, }
+\NormalTok{    cp.CCountry,}
+\NormalTok{    (}
+        \KeywordTok{SELECT}\NormalTok{ CEILING(RAND(CHECKSUM(NEWID()))}\OperatorTok{*}\NormalTok{(}\KeywordTok{SELECT} \FunctionTok{COUNT}\NormalTok{(}\OperatorTok{*}\NormalTok{) }
+        \KeywordTok{FROM}\NormalTok{ #selectedCities))}
+\NormalTok{    ) DepartureStationID}
+    \KeywordTok{FROM}\NormalTok{ #cidPairs }\KeywordTok{AS}\NormalTok{ cp}
+\NormalTok{) }\KeywordTok{AS}\NormalTok{ cp}
+\KeywordTok{INNER} \KeywordTok{JOIN}\NormalTok{ #selectedCities sc }
+    \KeywordTok{ON}\NormalTok{ sc.}\KeywordTok{ID} \OperatorTok{=}\NormalTok{ cp.DepartureStationID}
+\end{Highlighting}
+\end{Shaded}
+
+Az adathalmazból véletlenszerűen kiválasztásra kerül tízezer bejegyzés a
+végleges \emph{Bookings} táblába:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+
+\KeywordTok{INSERT} \KeywordTok{INTO}\NormalTok{ Bookings}
+\KeywordTok{SELECT}\NormalTok{ TOP(}\DecValTok{10000}\NormalTok{) }\OperatorTok{*}
+\KeywordTok{FROM}\NormalTok{ #bookingsAll}
+\KeywordTok{WHERE}\NormalTok{ (}\FunctionTok{ABS}\NormalTok{(}\FunctionTok{CAST}\NormalTok{((CHECKSUM(}\OperatorTok{*}\NormalTok{) }\OperatorTok{*}\NormalTok{ RAND()) }\KeywordTok{as} \DataTypeTok{int}\NormalTok{)) % }\DecValTok{100}\NormalTok{) }\OperatorTok{<} \DecValTok{30}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{indexek-luxe9trehozuxe1sa}{%
+\subsection{Indexek létrehozása}\label{indexek-luxe9trehozuxe1sa}}
+
+\emph{BookingID} mezőn alapértelmezetten létrejön egy clustered index a
+\emph{PRIMARY KEY} feltétel miatt
+
+Non Clustered Index a CCountry és CustomerID párokon:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE}\NormalTok{ NONCLUSTERED }\KeywordTok{INDEX}\NormalTok{ NC_Bookings_countryCid }\KeywordTok{ON}\NormalTok{ [dbo].[Bookings]}
+\NormalTok{(}
+\NormalTok{    [CCountry] }\KeywordTok{ASC}\NormalTok{,}
+\NormalTok{    [CustomerID] }\KeywordTok{ASC}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Ezen kívűl a feladat lekérdezéseihez a Database Engine Tuning Advisor
+által ajánlott optimális non clustered indexek:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE}\NormalTok{ NONCLUSTERED }\KeywordTok{INDEX}\NormalTok{ NC_Bookings_countryCidDate }\KeywordTok{ON}\NormalTok{ [dbo].[Bookings]}
+\NormalTok{(}
+\NormalTok{    [}\DataTypeTok{Date}\NormalTok{] }\KeywordTok{ASC}\NormalTok{,}
+\NormalTok{    [CCountry] }\KeywordTok{ASC}\NormalTok{,}
+\NormalTok{    [CustomerID] }\KeywordTok{ASC}
+\NormalTok{)}
+\NormalTok{INCLUDE([Price])}
+
+\KeywordTok{CREATE}\NormalTok{ NONCLUSTERED }\KeywordTok{INDEX}\NormalTok{ NC_Bookings_countryDateStation }\KeywordTok{ON}\NormalTok{ [dbo].[Bookings]}
+\NormalTok{(}
+\NormalTok{    [DepartureStation] }\KeywordTok{ASC}\NormalTok{,}
+\NormalTok{    [}\DataTypeTok{Date}\NormalTok{] }\KeywordTok{ASC}\NormalTok{,}
+\NormalTok{    [CCountry] }\KeywordTok{ASC}
+\NormalTok{)}
+\NormalTok{INCLUDE([Price])}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{lekuxe9rdezuxe9sek}{%
+\section{Lekérdezések}\label{lekuxe9rdezuxe9sek}}
+
+\hypertarget{feladat---2019-muxe1jusi-megrendeluxe9sek-csuxf6kkenux151-sorrendben}{%
+\paragraph{2. feladat - 2019 májusi megrendelések csökkenő
+sorrendben}\label{feladat---2019-muxe1jusi-megrendeluxe9sek-csuxf6kkenux151-sorrendben}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{SELECT}\NormalTok{ b.CustomerID, b.CCountry , }\FunctionTok{SUM}\NormalTok{(b.Price) }\StringTok{'Total Amount'}
+\KeywordTok{FROM}\NormalTok{ Bookings b}
+\KeywordTok{WHERE}\NormalTok{ b.[}\DataTypeTok{Date}\NormalTok{] }\OperatorTok{>=} \StringTok{'2019-05-01'} \KeywordTok{AND}\NormalTok{ b.[}\DataTypeTok{Date}\NormalTok{] }\OperatorTok{<} \StringTok{'2019-06-01'}
+\KeywordTok{GROUP} \KeywordTok{BY}\NormalTok{ b.CustomerID,b.CCountry}
+\KeywordTok{ORDER} \KeywordTok{BY} \StringTok{'Total Amount'} \KeywordTok{DESC}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{feladat---muxe1sodik-negyeduxe9v-luton-buxf3l-induluxf3-megrendeluxe9seinek-uxf6sszegei}{%
+\paragraph{3. feladat - Második negyedév Luton-ból induló
+megrendeléseinek
+összegei}\label{feladat---muxe1sodik-negyeduxe9v-luton-buxf3l-induluxf3-megrendeluxe9seinek-uxf6sszegei}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{SELECT}\NormalTok{ b.CCountry Country,}
+\NormalTok{    ISNULL(}\FunctionTok{SUM}\NormalTok{(}\ControlFlowTok{case} \ControlFlowTok{when}\NormalTok{ DATEPART(m,b.[}\DataTypeTok{Date}\NormalTok{]) }\OperatorTok{=} \DecValTok{4} \ControlFlowTok{THEN}\NormalTok{ b.Price }\ControlFlowTok{END}\NormalTok{),}\DecValTok{0}\NormalTok{) }\StringTok{'2019-04'}\NormalTok{,}
+\NormalTok{    ISNULL(}\FunctionTok{SUM}\NormalTok{(}\ControlFlowTok{case} \ControlFlowTok{when}\NormalTok{ DATEPART(m,b.[}\DataTypeTok{Date}\NormalTok{]) }\OperatorTok{=} \DecValTok{5} \ControlFlowTok{THEN}\NormalTok{ b.Price }\ControlFlowTok{END}\NormalTok{),}\DecValTok{0}\NormalTok{) }\StringTok{'2019-05'}\NormalTok{,}
+\NormalTok{    ISNULL(}\FunctionTok{SUM}\NormalTok{(}\ControlFlowTok{case} \ControlFlowTok{when}\NormalTok{ DATEPART(m,b.[}\DataTypeTok{Date}\NormalTok{]) }\OperatorTok{=} \DecValTok{6} \ControlFlowTok{THEN}\NormalTok{ b.Price }\ControlFlowTok{END}\NormalTok{),}\DecValTok{0}\NormalTok{) }\StringTok{'2019-06'}
+\KeywordTok{FROM}\NormalTok{ Bookings b}
+\KeywordTok{WHERE}\NormalTok{ b.DepartureStation }\OperatorTok{=} \StringTok{'Luton'} \KeywordTok{AND}\NormalTok{ b.[}\DataTypeTok{Date}\NormalTok{] }\OperatorTok{>=} \StringTok{'2019-04-01'} \KeywordTok{AND}\NormalTok{ b.[}\DataTypeTok{Date}\NormalTok{] }\OperatorTok{<} \StringTok{'2019-07-01'}
+\KeywordTok{GROUP} \KeywordTok{BY}\NormalTok{ b.CCountry}
+\KeywordTok{ORDER} \KeywordTok{BY} \FunctionTok{SUM}\NormalTok{(b.Price) }\KeywordTok{DESC}
+\end{Highlighting}
+\end{Shaded}
+
+Megvalósítható \emph{PIVOT} használatával is, ez azonban csak kevésbé
+rugalmas megjelenítést tesz lehetővé
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM} 
+\NormalTok{(}\KeywordTok{SELECT}\NormalTok{ b.CCountry Country, FORMAT(b.[}\DataTypeTok{Date}\NormalTok{],}\StringTok{'yyyy-MM'}\NormalTok{) dpart, b.Price}
+    \KeywordTok{FROM}\NormalTok{ Bookings b}
+    \KeywordTok{WHERE}\NormalTok{ b.DepartureStation }\OperatorTok{=} \StringTok{'Luton'} \KeywordTok{AND}\NormalTok{ b.[}\DataTypeTok{Date}\NormalTok{] }\OperatorTok{>=} \StringTok{'2019-04-01'} \KeywordTok{AND}\NormalTok{ b.[}\DataTypeTok{Date}\NormalTok{] }\OperatorTok{<} \StringTok{'2019-07-01'}\NormalTok{) x}
+\NormalTok{PIVOT (}
+\FunctionTok{SUM}\NormalTok{(x.Price)}
+\ControlFlowTok{FOR}\NormalTok{ dpart }\KeywordTok{IN}\NormalTok{ ([}\DecValTok{2019}\OperatorTok{-}\DecValTok{04}\NormalTok{],[}\DecValTok{2019}\OperatorTok{-}\DecValTok{05}\NormalTok{],[}\DecValTok{2019}\OperatorTok{-}\DecValTok{06}\NormalTok{])}
+\NormalTok{) PivotTable;}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{feladat---ruxe9giuxf3nkuxe9nti-uxfcgyfuxe9l-vuxe1suxe1rluxe1si-szuxe1mok-kimutatuxe1sa}{%
+\paragraph{4. feladat - Régiónkénti ügyfél vásárlási számok
+kimutatása}\label{feladat---ruxe9giuxf3nkuxe9nti-uxfcgyfuxe9l-vuxe1suxe1rluxe1si-szuxe1mok-kimutatuxe1sa}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{SELECT}\NormalTok{ cntQry.CCountry Country, }
+    \FunctionTok{COUNT}\NormalTok{(}\ControlFlowTok{case} \ControlFlowTok{when}\NormalTok{ cntQry.buyCnt }\OperatorTok{=} \DecValTok{1} \ControlFlowTok{THEN} \DecValTok{1} \ControlFlowTok{ELSE} \KeywordTok{null} \ControlFlowTok{END}\NormalTok{) [}\DecValTok{1}\NormalTok{], }
+    \FunctionTok{COUNT}\NormalTok{(}\ControlFlowTok{case} \ControlFlowTok{when}\NormalTok{ cntQry.buyCnt }\OperatorTok{=} \DecValTok{2} \ControlFlowTok{THEN} \DecValTok{1} \ControlFlowTok{ELSE} \KeywordTok{null} \ControlFlowTok{END}\NormalTok{) [}\DecValTok{2}\NormalTok{], }
+    \FunctionTok{COUNT}\NormalTok{(}\ControlFlowTok{case} \ControlFlowTok{when}\NormalTok{ cntQry.buyCnt }\OperatorTok{=} \DecValTok{3} \ControlFlowTok{THEN} \DecValTok{1} \ControlFlowTok{ELSE} \KeywordTok{null} \ControlFlowTok{END}\NormalTok{) [}\DecValTok{3}\NormalTok{], }
+    \FunctionTok{COUNT}\NormalTok{(}\ControlFlowTok{case} \ControlFlowTok{when}\NormalTok{ cntQry.buyCnt }\KeywordTok{BETWEEN} \DecValTok{4} \KeywordTok{AND} \DecValTok{9} \ControlFlowTok{THEN} \DecValTok{1} \ControlFlowTok{ELSE} \KeywordTok{null} \ControlFlowTok{END}\NormalTok{) [}\DecValTok{4}\OperatorTok{-}\DecValTok{10}\NormalTok{], }
+    \FunctionTok{COUNT}\NormalTok{(}\ControlFlowTok{case} \ControlFlowTok{when}\NormalTok{ cntQry.buyCnt }\KeywordTok{BETWEEN} \DecValTok{10} \KeywordTok{AND} \DecValTok{100} \ControlFlowTok{THEN} \DecValTok{1} \ControlFlowTok{ELSE} \KeywordTok{null} \ControlFlowTok{END}\NormalTok{) [}\DecValTok{10}\OperatorTok{-}\DecValTok{100}\NormalTok{]}
+\KeywordTok{FROM}\NormalTok{ (}
+    \KeywordTok{SELECT} \FunctionTok{COUNT}\NormalTok{(b.BookingID) buyCnt, b.CustomerID, b.CCountry }
+    \KeywordTok{FROM}\NormalTok{ Bookings b }
+    \KeywordTok{GROUP} \KeywordTok{BY}\NormalTok{ b.CustomerID,b.CCountry}
+\NormalTok{    ) cntQry}
+\KeywordTok{GROUP} \KeywordTok{BY}\NormalTok{ cntQry.CCountry}
+\KeywordTok{ORDER} \KeywordTok{BY} \FunctionTok{SUM}\NormalTok{(cntQry.buyCnt)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{feladat---helymegtakaruxedtuxe1s-az-indexek-eldobuxe1suxe1val}{%
+\section{6. feladat - Helymegtakarítás az indexek
+eldobásával}\label{feladat---helymegtakaruxedtuxe1s-az-indexek-eldobuxe1suxe1val}}
+
+Az indexek méretét több dolog is befolyásolja, így a konkrét tábla és
+indexek ismerete nélkül nem lehet meghatározni a helymegtakarítást.
+Befolyásoló szempontok lehetnek például a tábla mérete, a pageek
+fill-factora vagy indexben használt oszlopok típusai és száma. További
+nehezen meghatározható tényező a tömörített indexek és LOB-ok tárhely
+igénye
+
+Az indexek által foglalt hely lekérdezhető az alábbi
+queryvel{[}\^{}3{]}: {[}\^{}3{]}: \emph{} helyettesítendő a keresett
+tábla nevével
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{SELECT}
+\NormalTok{OBJECT_NAME(i.OBJECT_ID) }\KeywordTok{AS}\NormalTok{ TableName,}
+\NormalTok{i.name }\KeywordTok{AS}\NormalTok{ IndexName,}
+\NormalTok{i.index_id }\KeywordTok{AS}\NormalTok{ IndexID,}
+\DecValTok{8} \OperatorTok{*} \FunctionTok{SUM}\NormalTok{(a.used_pages) }\KeywordTok{AS} \StringTok{'Indexsize(KB)'}
+\KeywordTok{FROM}\NormalTok{ sys.}\KeywordTok{indexes} \KeywordTok{AS}\NormalTok{ i}
+\KeywordTok{JOIN}\NormalTok{ sys.}\KeywordTok{partitions} \KeywordTok{AS}\NormalTok{ p }\KeywordTok{ON}\NormalTok{ p.OBJECT_ID }\OperatorTok{=}\NormalTok{ i.OBJECT_ID }\KeywordTok{AND}\NormalTok{ p.index_id }\OperatorTok{=}\NormalTok{ i.index_id}
+\KeywordTok{JOIN}\NormalTok{ sys.allocation_units }\KeywordTok{AS}\NormalTok{ a }\KeywordTok{ON}\NormalTok{ a.container_id }\OperatorTok{=}\NormalTok{ p.partition_id}
+\KeywordTok{WHERE}\NormalTok{ OBJECT_NAME(i.OBJECT_ID) }\OperatorTok{=} \OperatorTok{<}\NormalTok{TÁBLA}\OperatorTok{>}
+\KeywordTok{GROUP} \KeywordTok{BY}\NormalTok{ i.OBJECT_ID,i.index_id,i.name}
+\KeywordTok{ORDER} \KeywordTok{BY}\NormalTok{ OBJECT_NAME(i.OBJECT_ID),i.index_id}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{section}{%
+\section{}\label{section}}
+
+\hypertarget{random-jegyzetek}{%
+\section{random jegyzetek}\label{random-jegyzetek}}
+
+\begin{quote}
+SNAPShOT ISOLATION ON tempdb-be az update előtti adatok bekerülnek egy
+row version számmal p: nincs lock
+\end{quote}
+
+\begin{verbatim}
+c: tempdb igénybevétel nő
+\end{verbatim}
+
+\begin{quote}
+Read committed Snapshot On olvasni cak commitelt adatokból
+\end{quote}
+
+\begin{quote}
+Mire érdemes figyelni: több update-nél UPDLock hinttel zárható az
+updatelt sor kiadott update-eknél van e select updlockkal, vagy
+hibakezelés (begin try/end try)
+\end{quote}
+
+\begin{quote}
+(INDEX) 300MB tábla, 2 nonCL, 1 CL index eldobás hatása a méretre
+(\%ban)
+\end{quote}
+
+\begin{verbatim}
+[BookingID] int 4b
+[CustomerID] int 4b
+[CCountry] varchar(2) 4b (2+2)
+[DepartureStation] varchar(30) 32b (30+2)
+[Date] datetime 8b
+[Price] money 8b
+[Seats] int 4b 
+Row req: 70b (28 + [2+2*2+32] + 4 rowHeader)
+
+Clustered a BookingID-n automatikusan
+Row req 11b (4+1 rowHeader+6 childID)
+
+NC 2 szűk DepState & CID
+Row reqs 43b  <- 11b (4+1+6) & 32b (2+30)
+
+NEM számol vele: page veszteség, non-leaf page méret, tömörítés
+
+arányok: 70:54 -> 300M/124*70 -> 164M adat -> 45% csökkenés
+\end{verbatim}
+
+\renewcommand*\contentsname{Tartalomjegyzék}
+{
+\hypersetup{linkcolor=}
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+
+\end{document}

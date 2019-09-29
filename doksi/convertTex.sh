@@ -1,0 +1,1 @@
+xelatex doksi.tex

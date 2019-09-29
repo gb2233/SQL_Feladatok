@@ -242,7 +242,7 @@ ORDER BY SUM(cntQry.buyCnt)
 
 # 6. feladat - Helymegtakarítás az indexek eldobásával
 
-Az indexek méretét több dolog is befolyásolja, így a konkrét tábla és indexek ismerete nélkül nem lehet meghatározni a helymegtakarítást. Befolyásoló szempontok lehetnek például a tábla mérete, a pageek fill-factora vagy indexben használt oszlopok típusai és száma. További nehezen meghatározható tényező a tömörített indexek és LOB-ok tárhely igénye
+Az indexek méretét több dolog is befolyásolja, így a konkrét tábla és indexek ismerete nélkül nem lehet meghatározni a helymegtakarítást. Befolyásoló szempontok lehetnek például a tábla mérete, a pagek fill-factora vagy indexben használt oszlopok típusai és száma. Továbbá nehezen meghatározható tényező a tömörített indexek és LOB-ok tárhely igénye
 
 Az indexek által foglalt hely lekérdezhető az alábbi queryvel[^3]:
  [^3]: *<TÁBLA>* helyettesítendő a keresett tábla nevével
@@ -261,7 +261,15 @@ GROUP BY i.OBJECT_ID,i.index_id,i.name
 ORDER BY OBJECT_NAME(i.OBJECT_ID),i.index_id
 ```
 
-# 
+# 7. feladat - Helymegtakarítás az indexek eldobásával
+
+# 8. feladat - Helymegtakarítás az indexek eldobásával
+
+# 9. feladat - Helymegtakarítás az indexek eldobásával
+
+# 10. feladat - Helymegtakarítás az indexek eldobásával
+
+# 11. feladat - Helymegtakarítás az indexek eldobásával
 
 
 
