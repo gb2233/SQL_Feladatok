@@ -9,7 +9,7 @@ Az európai városoknevek és az országok ISO kód listái külső forrásból[
 
  [^linkek]: [ISO Kódok](https://datahub.io/core/country-list?fbclid=IwAR1Kapllmzc9sthOPNstkF23BomEfkQeLyivSLC2joxgqqdsoksLm9FP3qw), [Városok](http://worldpopulationreview.com/continents/cities-in-europe/?fbclid=IwAR2zDepceQtlVAJOgoXHoPPrG6RKVhriUGgWYut_feKryAoLXVCs36y-Ip0)
 
-Countries tábla[^2] :
+Countries tábla:
 
 
 ```sql
@@ -27,7 +27,7 @@ WITH (FORMAT='CSV',
 
 ```
 
-Iso2Codes tábla[^2] :
+Iso2Codes tábla:
 ```sql
 CREATE TABLE Iso2Codes(
     [Code] VARCHAR(2) NOT NULL,
@@ -40,8 +40,6 @@ WITH (FORMAT='CSV',
 	FIELDTERMINATOR = '|',
 	ROWTERMINATOR = '0x0a')
 ```
-
- [^2]: *<Elérési Útvonal>* helyettesítendő a kívánt fájl helyével
  
 ## Kiegészítő adathalmazok létrehozása
 
@@ -261,30 +259,122 @@ GROUP BY i.OBJECT_ID,i.index_id,i.name
 ORDER BY OBJECT_NAME(i.OBJECT_ID),i.index_id
 ```
 
-# 7. feladat - Helymegtakarítás az indexek eldobásával
+# 7. feladat - Helyfelszabadítás az az adatbázis adat fájl törlésével
 
-# 8. feladat - Helymegtakarítás az indexek eldobásával
+Ahhoz, hogy egy nem üres adatfájlt eltávolíthassunk, először a benne tárolt adatokat a többi fájba kell migrálnunk (*DBCC SHRINKFILE*, *EMPTYFILE* argumentuma).
+Majd a fájl törölhető.
+
+Shrinkelésért és törlésért felelős script:
+```sql
+DBCC SHRINKFILE ('<FAJL>', EMPTYFILE);
+
+ALTER DATABASE SQL_Projekt_Feladat REMOVE FILE <FAJL>
+```
+
+# 8. feladat - tempdb elosztása
+
+Új adat fájlok létrehozása (ismételve a kívánt alkalommal):
+```sql
+ALTER DATABASE [tempdb] 
+ADD FILE ( 
+    NAME = N'temp5', 
+    FILENAME = N'T:\<Elérési Útvonal>\temp<NÉV>.ndf' , 
+    SIZE = 10GB , 
+    FILEGROWTH = 65536KB 
+    )
+```
+
+Régi tempdb file tartalmának elosztása a többi fájl között:
+```sql
+DBCC SHRINKFILE (N'tempdev' , EMPTYFILE)
+```
+
+Régi tempdb file maximális méretének beállítása:
+```sql
+DBCC SHRINKFILE (N'tempdev', 10240)
+```
 
 # 9. feladat - Helymegtakarítás az indexek eldobásával
 
-# 10. feladat - Helymegtakarítás az indexek eldobásával
+# 10. feladat - Adatbázis visszaállítás
+
+### A.
+
+Tail log backup készítése:
+```sql
+BACKUP LOG SQL_Projekt_Feladat 
+TO DISK = N'<Elérési Út>\tail_log.bak' 
+	WITH 
+		NORECOVERY, 
+		NO_TRUNCATE
+```
+
+Utolsó full backup visszaállítása
+```sql
+RESTORE DATABASE SQL_Projekt_Feladat  
+FROM  DISK = N'<Elérési Út>\last_full.bak' 
+   WITH NORECOVERY; 
+```
+
+
+Utolsó differenciális backup visszaállítása
+```sql 
+RESTORE  DATABASE SQL_Projekt_Feladat 
+FROM  DISK = N'<Elérési Út>\last_diff.bak' 
+	WITH NORECOVERY; 
+```
+
+A megfelelő transaction logok visszaállítása:
+```sql 
+RESTORE LOG SQL_Projekt_Feladat 
+FROM DISK = N'<Elérési Út>\log<NÉV>.bak' 
+   WITH NORECOVERY; 
+```
+
+Tail log visszaállítása:
+```sql 
+RESTORE LOG SQL_Projekt_Feladat
+FROM DISK = N'<Elérési Út>\tail_log.bak' 
+   WITH NORECOVERY;  
+```
+
+Adatbázis kivétele recovery módból:
+```sql
+RESTORE DATABASE SQL_Projekt_Feladat   
+   WITH RECOVERY;
+```
+
+
+### B.
+
+Visszaállítjuk a megfelelő mentést egy ideiglenes adatbázisba:
+```sql
+RESTORE DATABASE DatabaseCopy 
+FROM DISK=N'<Elérési Út>\database.bak'
+   WITH NORECOVERY, 
+   MOVE 'DataBaseFile1' 
+    TO '<Elérési Út>\databaseCopy.mdf',  
+   MOVE 'DataBaseLog' 
+    TO '<Elérési Út>\databaseCopy_Log.ldf';  
+```
+
+Ha ez megtörtént, a szükséges táblákat a *MERGE* utasítás segítségével visszaállítjuk
+
+```sql
+MERGE Database.target_table target
+USING DatabaseCopy.source_table source
+ON source.primary_key = target.primary_key
+WHEN MATCHED
+    THEN UPDATE SET 
+		target.col1 = source.col1,
+		target.col2 = source.col2
+WHEN NOT MATCHED
+    THEN INSERT (col1,col2) VALUES (val1,val2)
+WHEN NOT MATCHED BY SOURCE
+    THEN DELETE;
+```
 
 # 11. feladat - Helymegtakarítás az indexek eldobásával
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # random jegyzetek
@@ -302,27 +392,3 @@ tempdb-be az update előtti adatok bekerülnek egy row version számmal
     több update-nél
     UPDLock hinttel zárható az updatelt sor
     kiadott update-eknél van e select updlockkal, vagy hibakezelés (begin try/end try)
-
-
-> (INDEX)
-> 300MB tábla, 2 nonCL, 1 CL index
-  eldobás hatása a méretre (%ban)
-  
-    [BookingID] int 4b
-    [CustomerID] int 4b
-    [CCountry] varchar(2) 4b (2+2)
-    [DepartureStation] varchar(30) 32b (30+2)
-    [Date] datetime 8b
-    [Price] money 8b
-    [Seats] int 4b 
-    Row req: 70b (28 + [2+2*2+32] + 4 rowHeader)
-    
-    Clustered a BookingID-n automatikusan
-    Row req 11b (4+1 rowHeader+6 childID)
-    
-    NC 2 szűk DepState & CID
-    Row reqs 43b  <- 11b (4+1+6) & 32b (2+30)
-
-    NEM számol vele: page veszteség, non-leaf page méret, tömörítés
-    
-    arányok: 70:54 -> 300M/124*70 -> 164M adat -> 45% csökkenés
