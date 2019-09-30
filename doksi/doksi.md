@@ -82,7 +82,8 @@ WITH
   l3(i) AS (SELECT 0 FROM l2 a, l2 b),
   l4(i) AS (SELECT 0 FROM l3 a, l3 b),
   numbers(i) AS (SELECT ROW_NUMBER() OVER(ORDER BY (SELECT 0)) FROM l4)
-SELECT DISTINCT TOP(2500) (CEILING(RAND(CHECKSUM(NEWID()))*899999)+100000) CustomerID 
+SELECT DISTINCT TOP(2500) 
+    (CEILING(RAND(CHECKSUM(NEWID()))*899999)+100000) CustomerID 
 INTO #cids 
 FROM numbers 
 ORDER BY CustomerID
@@ -92,7 +93,12 @@ ORDER BY CustomerID
 ```sql
 SELECT cp.CustomerID CustomerID, sc.Code CCountry
 INTO #cidPairs
-FROM (SELECT cids.CustomerID, (CEILING(RAND(CHECKSUM(NEWID()))*(SELECT COUNT(*) FROM #selectedCities))) CountryID FROM #cids cids) cp
+FROM (
+    SELECT cids.CustomerID, 
+    (CEILING(RAND(CHECKSUM(NEWID()))*(SELECT COUNT(*) 
+        FROM #selectedCities))) CountryID 
+    FROM #cids cids
+    ) cp
 INNER JOIN #selectedCities sc on cp.CountryID = sc.ID
 ORDER BY CustomerID
 ```
@@ -124,7 +130,9 @@ SELECT TOP(1000000)
 	cp.CustomerID,
 	cp.CCountry,
 	sc.asciiname DepartureStation,
-	(DATEADD(ms,RAND(CHECKSUM(NEWID())) * 86400000,DATEADD(d,RAND(CHECKSUM(NEWID()))*365,'2019-01-01'))) [Date],
+	(DATEADD(ms,RAND(CHECKSUM(NEWID())) * 86400000,
+        DATEADD(d,RAND(CHECKSUM(NEWID()))*365,'2019-01-01'))
+    ) [Date],
 	(ROUND(RAND(CHECKSUM(NEWID()))*200+10,2)) Price,
 	(CEILING(RAND(CHECKSUM(NEWID()))*50)) Seats
 INTO #bookingsAll
@@ -167,7 +175,8 @@ CREATE NONCLUSTERED INDEX NC_Bookings_countryCid ON [dbo].[Bookings]
 
 Ezen kívűl a feladat lekérdezéseihez a Database Engine Tuning Advisor által ajánlott optimális non clustered indexek:
 ```sql
-CREATE NONCLUSTERED INDEX NC_Bookings_countryCidDate ON [dbo].[Bookings]
+CREATE NONCLUSTERED INDEX NC_Bookings_countryCidDate 
+    ON [dbo].[Bookings]
 (
 	[Date] ASC,
 	[CCountry] ASC,
@@ -175,7 +184,8 @@ CREATE NONCLUSTERED INDEX NC_Bookings_countryCidDate ON [dbo].[Bookings]
 )
 INCLUDE([Price])
 
-CREATE NONCLUSTERED INDEX NC_Bookings_countryDateStation ON [dbo].[Bookings]
+CREATE NONCLUSTERED INDEX NC_Bookings_countryDateStation 
+    ON [dbo].[Bookings]
 (
 	[DepartureStation] ASC,
 	[Date] ASC,
@@ -186,8 +196,7 @@ INCLUDE([Price])
 
 # Lekérdezések
 
-#### 2. feladat - 2019 májusi megrendelések csökkenő sorrendben
-
+### 1. Lekérdezés - 2019. májusi megrendelések csökkenő sorrendben
 ```sql
 SELECT b.CustomerID, b.CCountry , SUM(b.Price) 'Total Amount'
 FROM Bookings b
@@ -196,39 +205,58 @@ GROUP BY b.CustomerID,b.CCountry
 ORDER BY 'Total Amount' DESC
 ```
 
-#### 3. feladat - Második negyedév Luton-ból induló megrendeléseinek összegei
-
+### 2. Lekérdezés - Második negyedév Lutonból induló megrendeléseinek összegei
 ```sql
 SELECT b.CCountry Country,
-	ISNULL(SUM(case when DATEPART(m,b.[Date]) = 4 THEN b.Price END),0) '2019-04',
-	ISNULL(SUM(case when DATEPART(m,b.[Date]) = 5 THEN b.Price END),0) '2019-05',
-	ISNULL(SUM(case when DATEPART(m,b.[Date]) = 6 THEN b.Price END),0) '2019-06'
+	ISNULL(
+        SUM(case when DATEPART(m,b.[Date]) = 4 THEN b.Price END)
+        ,0) '2019-04',
+	ISNULL(
+        SUM(case when DATEPART(m,b.[Date]) = 5 THEN b.Price END)
+        ,0) '2019-05',
+	ISNULL(
+        SUM(case when DATEPART(m,b.[Date]) = 6 THEN b.Price END)
+        ,0) '2019-06'
 FROM Bookings b
-WHERE b.DepartureStation = 'Luton' AND b.[Date] >= '2019-04-01' AND b.[Date] < '2019-07-01'
+WHERE b.DepartureStation = 'Luton' 
+    AND b.[Date] >= '2019-04-01' 
+    AND b.[Date] < '2019-07-01'
 GROUP BY b.CCountry
 ORDER BY SUM(b.Price) DESC
 ```
+
 Megvalósítható *PIVOT* használatával is, ez azonban csak kevésbé rugalmas megjelenítést tesz lehetővé
 ```sql
 SELECT * FROM 
 (SELECT b.CCountry Country, FORMAT(b.[Date],'yyyy-MM') dpart, b.Price
 	FROM Bookings b
-	WHERE b.DepartureStation = 'Luton' AND b.[Date] >= '2019-04-01' AND b.[Date] < '2019-07-01') x
+	WHERE b.DepartureStation = 'Luton' 
+        AND b.[Date] >= '2019-04-01' 
+        AND b.[Date] < '2019-07-01') x
 PIVOT (
 SUM(x.Price)
 FOR dpart IN ([2019-04],[2019-05],[2019-06])
 ) PivotTable;
 ```
 
-#### 4. feladat - Régiónkénti ügyfél vásárlási számok kimutatása
-
+### 3. Lekérdezés - Ügyfelek vásárlási számának kimutatása régiónként
 ```sql
 SELECT cntQry.CCountry Country, 
-	COUNT(case when cntQry.buyCnt = 1 THEN 1 ELSE null END) [1], 
-	COUNT(case when cntQry.buyCnt = 2 THEN 1 ELSE null END) [2], 
-	COUNT(case when cntQry.buyCnt = 3 THEN 1 ELSE null END) [3], 
-	COUNT(case when cntQry.buyCnt BETWEEN 4 AND 9 THEN 1 ELSE null END) [4-10], 
-	COUNT(case when cntQry.buyCnt BETWEEN 10 AND 100 THEN 1 ELSE null END) [10-100]
+	COUNT(
+        case when cntQry.buyCnt = 1 THEN 1 ELSE null END
+        ) [1], 
+	COUNT(
+        case when cntQry.buyCnt = 2 THEN 1 ELSE null END
+        ) [2], 
+	COUNT(
+        case when cntQry.buyCnt = 3 THEN 1 ELSE null END
+        ) [3], 
+	COUNT(
+        case when cntQry.buyCnt BETWEEN 4 AND 9 THEN 1 ELSE null END
+        ) [4-10], 
+	COUNT(
+        case when cntQry.buyCnt BETWEEN 10 AND 100 THEN 1 ELSE null END
+        ) [10-100]
 FROM (
     SELECT COUNT(b.BookingID) buyCnt, b.CustomerID, b.CCountry 
     FROM Bookings b 
@@ -240,11 +268,9 @@ ORDER BY SUM(cntQry.buyCnt)
 
 # 6. feladat - Helymegtakarítás az indexek eldobásával
 
-Az indexek méretét több dolog is befolyásolja, így a konkrét tábla és indexek ismerete nélkül nem lehet meghatározni a helymegtakarítást. Befolyásoló szempontok lehetnek például a tábla mérete, a pagek fill-factora vagy indexben használt oszlopok típusai és száma. Továbbá nehezen meghatározható tényező a tömörített indexek és LOB-ok tárhely igénye
+Az indexek méretét több dolog is befolyásolja, így a tényleges tábla és az indexek ismerete nélkül nem lehet meghatározni a helymegtakarítást. Befolyásoló szempontok lehetnek például a tábla mérete, a pagek fill-factora vagy indexben használt oszlopok típusai és száma. Továbbá nehezen meghatározható tényező a tömörített indexek és LOB-ok tárhely igénye.
 
-Az indexek által foglalt hely lekérdezhető az alábbi queryvel[^3]:
- [^3]: *<TÁBLA>* helyettesítendő a keresett tábla nevével
-
+Az indexek által foglalt hely lekérdezhető az alábbi queryvel:
 ```sql
 SELECT
 OBJECT_NAME(i.OBJECT_ID) AS TableName,
@@ -252,14 +278,17 @@ i.name AS IndexName,
 i.index_id AS IndexID,
 8 * SUM(a.used_pages) AS 'Indexsize(KB)'
 FROM sys.indexes AS i
-JOIN sys.partitions AS p ON p.OBJECT_ID = i.OBJECT_ID AND p.index_id = i.index_id
-JOIN sys.allocation_units AS a ON a.container_id = p.partition_id
+JOIN sys.partitions AS p 
+    ON p.OBJECT_ID = i.OBJECT_ID 
+        AND p.index_id = i.index_id
+JOIN sys.allocation_units AS a 
+    ON a.container_id = p.partition_id
 WHERE OBJECT_NAME(i.OBJECT_ID) = <TÁBLA>
 GROUP BY i.OBJECT_ID,i.index_id,i.name
 ORDER BY OBJECT_NAME(i.OBJECT_ID),i.index_id
 ```
 
-# 7. feladat - Helyfelszabadítás az az adatbázis adat fájl törlésével
+# 7. feladat - Helyfelszabadítás az adatbázis adat fájl törlésével
 
 Ahhoz, hogy egy nem üres adatfájlt eltávolíthassunk, először a benne tárolt adatokat a többi fájba kell migrálnunk (*DBCC SHRINKFILE*, *EMPTYFILE* argumentuma).
 Majd a fájl törölhető.
@@ -294,7 +323,7 @@ Régi tempdb file maximális méretének beállítása:
 DBCC SHRINKFILE (N'tempdev', 10240)
 ```
 
-# 9. feladat - SQL Server snapshoz isolation
+# 9. feladat - SQL Server snapshot isolation
 
 A megadott beállítások esetén előfordulhat, hogy update tranzakciók hibát generálnak (optimistic concurrency miatt)
 Select utasítások esetén alkalmazott-e a fejlesztő update lockot, vagy használt-e *try-catch* vagy *if error* hibakezelést.
@@ -379,7 +408,12 @@ WHEN NOT MATCHED BY SOURCE
 
 # 11. feladat - Hibaelhárítás
 
-Performance monitor segítségével, ha a kiszolgálón más szolgáltatások is futnak, megnézni, hogy nem 
-Activity monitor (sql blokkolások, zárolások)
-(Dynamic management viewok)
-Extended events-el lekérdezések duration
+Performance monitor segítségével kideríthető, ha a kiszolgálón más szolgáltatások is futnak, hogy marad-e az SQL Szerver számára megfelelő szabad erőforrás
+
+Activity monitorral  nyomon követhetőek az adatfájlon folyó I/O műveletek, közelmúltban futtatott- és jelenleg is futó erőforrásigényes lekérdezések, vagy a táblán aktív lockok (*EXEC SP_LOCK* is képes az utóbbiakat listázni)
+ 
+Dynamic management viewok segítségével az Activity monitorhoz hasonló, de bővebb adatok is elérhetőek
+
+SQL Profiler, vagy Extended events segítségével (SQL Szerver verziófüggő) task timeok megvizsgálhatóak és kideríthetőeks a hosszan futó utasítások
+
+Töredezett indexek is lassíthatnak az utasítások futásán, ez javítható az indexek újra rendezésével vagy újraépítésével (reorganize, rebuild)
