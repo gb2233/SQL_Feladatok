@@ -277,7 +277,7 @@ ALTER DATABASE SQL_Projekt_Feladat REMOVE FILE <FAJL>
 ```sql
 ALTER DATABASE [tempdb] 
 ADD FILE ( 
-    NAME = N'temp5', 
+    NAME = N'temp<NÉV>', 
     FILENAME = N'T:\<Elérési Útvonal>\temp<NÉV>.ndf' , 
     SIZE = 10GB , 
     FILEGROWTH = 65536KB 
@@ -294,7 +294,10 @@ Régi tempdb file maximális méretének beállítása:
 DBCC SHRINKFILE (N'tempdev', 10240)
 ```
 
-# 9. feladat - Helymegtakarítás az indexek eldobásával
+# 9. feladat - SQL Server snapshoz isolation
+
+A megadott beállítások esetén előfordulhat, hogy update tranzakciók hibát generálnak (optimistic concurrency miatt)
+Select utasítások esetén alkalmazott-e a fejlesztő update lockot, vagy használt-e *try-catch* vagy *if error* hibakezelést.
 
 # 10. feladat - Adatbázis visszaállítás
 
@@ -374,21 +377,9 @@ WHEN NOT MATCHED BY SOURCE
     THEN DELETE;
 ```
 
-# 11. feladat - Helymegtakarítás az indexek eldobásával
+# 11. feladat - Hibaelhárítás
 
-
-# random jegyzetek
-
-> SNAPShOT ISOLATION ON
-tempdb-be az update előtti adatok bekerülnek egy row version számmal
-    p: nincs lock
-    
-    c: tempdb igénybevétel nő
-    
-> Read committed Snapshot On
-    olvasni cak commitelt adatokból
-    
-> Mire érdemes figyelni:
-    több update-nél
-    UPDLock hinttel zárható az updatelt sor
-    kiadott update-eknél van e select updlockkal, vagy hibakezelés (begin try/end try)
+Performance monitor segítségével, ha a kiszolgálón más szolgáltatások is futnak, megnézni, hogy nem 
+Activity monitor (sql blokkolások, zárolások)
+(Dynamic management viewok)
+Extended events-el lekérdezések duration
